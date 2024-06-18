@@ -38,7 +38,8 @@ public class Wood : MonoBehaviour
 
         if (hitEffectPrefab != null)
         {
-            GameObject hitEffect = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);            
+            GameObject hitEffect = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(hitEffect, 2.0f);
         }
 
         if (currentHealth <= 0)

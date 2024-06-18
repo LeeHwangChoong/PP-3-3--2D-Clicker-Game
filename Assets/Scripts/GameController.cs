@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.IO;
 
 public class GameController : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class GameController : MonoBehaviour
     public Button upgradeCritButton;
     public Button upgradeSpeedButton;
     public Slider healthSlider;
+
+    public GameObject startPopup;
 
     private int miniWoodCount = 0;
     private Wood currentWood;
@@ -37,6 +40,8 @@ public class GameController : MonoBehaviour
         SpawnNewWood();
         UpdateMiniWoodCount();
 
+        startPopup.SetActive(true);
+
         upgradeAttackButton.onClick.AddListener(player.UpgradeAttack);
         upgradeCritButton.onClick.AddListener(player.UpgradeCrit);
         upgradeSpeedButton.onClick.AddListener(player.UpgradeSpeed);
@@ -44,6 +49,11 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (startPopup.activeSelf)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (currentWood == null)
@@ -107,5 +117,70 @@ public class GameController : MonoBehaviour
         treeHealthMultiplier += 0.1f;
         treesChopped++;
         SpawnNewWood();
+    }
+
+    public void SaveGame()
+    {
+        GameData data = new GameData
+        {
+            clickDamage = player.clickDamage,
+            critChance = player.critChance,
+            autoAttackInterval = player.autoAttackInterval,            
+            upgradeAttackLevel = player.upgradeAttackLevel,
+            upgradeAttackCost = player.upgradeAttackCost,
+            upgradeCritLevel = player.upgradeCritLevel,
+            upgradeCritCost = player.upgradeCritCost,
+            upgradeSpeedLevel = player.upgradeSpeedLevel,
+            upgradeSpeedCost = player.upgradeSpeedCost,
+            miniWoodCount = miniWoodCount,
+            treesChopped = treesChopped,
+            treeHealthMultiplier = treeHealthMultiplier
+        };
+
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+        Debug.Log("Game Saved");
+    }
+
+    public void LoadGame()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            GameData data = JsonUtility.FromJson<GameData>(json);
+
+            player.clickDamage = data.clickDamage;
+            player.critChance = data.critChance;
+            player.autoAttackInterval = data.autoAttackInterval;            
+            player.upgradeAttackLevel = data.upgradeAttackLevel;
+            player.upgradeAttackCost = data.upgradeAttackCost;
+            player.upgradeCritLevel = data.upgradeCritLevel;
+            player.upgradeCritCost = data.upgradeCritCost;
+            player.upgradeSpeedLevel = data.upgradeSpeedLevel;
+            player.upgradeSpeedCost = data.upgradeSpeedCost;
+            miniWoodCount = data.miniWoodCount;
+            treesChopped = data.treesChopped;
+            treeHealthMultiplier = data.treeHealthMultiplier;
+
+            Debug.Log("Game Loaded");
+        }
+        else
+        {
+            Debug.Log("No save file found");
+        }
+    }
+
+    public void StartNewGame()
+    {
+        startPopup.SetActive(false); // 팝업창 닫기
+        SpawnNewWood(); // 새로운 나무 스폰
+    }
+
+    public void LoadSavedGame()
+    {
+        LoadGame();
+        startPopup.SetActive(false); // 팝업창 닫기
+        SpawnNewWood(); // 새로운 나무 스폰
     }
 }

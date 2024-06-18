@@ -12,12 +12,12 @@ public class Player : MonoBehaviour
     private float nextAutoAttackTime = 0f;
     private Animator anim;
 
-    private int upgradeAttackLevel = 1;
-    private int upgradeAttackCost = 1;
-    private int upgradeCritLevel = 1;
-    private int upgradeCritCost = 10;
-    private int upgradeSpeedLevel = 1;
-    private int upgradeSpeedCost = 1;
+    public int upgradeAttackLevel = 1;
+    public int upgradeAttackCost = 1;
+    public int upgradeCritLevel = 1;
+    public int upgradeCritCost = 10;
+    public int upgradeSpeedLevel = 1;
+    public int upgradeSpeedCost = 1;
 
     public Button upgradeAttackButton;
     public Button upgradeCritButton;
@@ -66,6 +66,8 @@ public class Player : MonoBehaviour
 
     private void AutoAttack()
     {
+        if (GameController.Instance.startPopup.activeSelf) return;
+
         Wood wood = GameController.Instance.GetCurrentWood();
         if (wood != null)
         {
