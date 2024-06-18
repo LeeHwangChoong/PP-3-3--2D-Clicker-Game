@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
     private TMP_Text upgradeCritButtonText;
     private TMP_Text upgradeSpeedButtonText;
 
+    //public GameObject damageTextPrefab;
+
     private void Start()
     {
         anim = transform.Find("MainSprite").GetComponent<Animator>();
@@ -34,13 +36,11 @@ public class Player : MonoBehaviour
         upgradeAttackButtonText = upgradeAttackButton.GetComponentInChildren<TMP_Text>();
         upgradeCritButtonText = upgradeCritButton.GetComponentInChildren<TMP_Text>();
         upgradeSpeedButtonText = upgradeSpeedButton.GetComponentInChildren<TMP_Text>();
-
-        // 버튼 클릭 리스너 설정
+               
         upgradeAttackButton.onClick.AddListener(UpgradeAttack);
         upgradeCritButton.onClick.AddListener(UpgradeCrit);
         upgradeSpeedButton.onClick.AddListener(UpgradeSpeed);
-
-        // 초기 텍스트 설정
+                
         UpdateUpgradeButtonTexts();
     }
 
@@ -62,6 +62,7 @@ public class Player : MonoBehaviour
             damage *= 1.5f;            
         }
         wood.TakeDamage(damage);
+        //ShowDamageText(damage, wood.transform.position);
     }
 
     private void AutoAttack()
@@ -73,6 +74,7 @@ public class Player : MonoBehaviour
         {
             anim.SetTrigger("Attack1");
             wood.TakeDamage(autoDamage);
+            //ShowDamageText(autoDamage, wood.transform.position);
         }
     }
 
@@ -115,4 +117,20 @@ public class Player : MonoBehaviour
         upgradeCritButtonText.text = $"LV. {upgradeCritLevel} 치명타 확률 증가 (나무: {upgradeCritCost})";
         upgradeSpeedButtonText.text = $"LV. {upgradeSpeedLevel} 자동 공격 속도 증가 (나무: {upgradeSpeedCost})";
     }
+
+    //private void ShowDamageText(float damage, Vector3 position)
+    //{
+    //    // 데미지 텍스트 생성
+    //    GameObject damageText = Instantiate(damageTextPrefab);
+
+    //    // 데미지 텍스트 내용 설정
+    //    damageText.GetComponent<TextMeshPro>().text = damage.ToString();
+
+    //    // 텍스트를 약간 위로 이동시키기 위해 위치 조정
+    //    Vector3 screenPosition = Camera.main.WorldToScreenPoint(position);
+    //    damageText.transform.position = screenPosition + new Vector3(0, 1, 0);
+
+    //    // 일정 시간 후 텍스트 제거
+    //    Destroy(damageText, 1.0f);
+    //}
 }

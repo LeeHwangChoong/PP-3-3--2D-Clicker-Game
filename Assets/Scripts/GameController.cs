@@ -6,22 +6,21 @@ using System.IO;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
-
+        
     public GameObject[] woodPrefabs;
     public TMP_Text miniWoodNumText;
     public Button upgradeAttackButton;
     public Button upgradeCritButton;
     public Button upgradeSpeedButton;
     public Slider healthSlider;
-
     public GameObject startPopup;
-
+        
     private int miniWoodCount = 0;
     private Wood currentWood;
     private Player player;
     private float treeHealthMultiplier = 1.0f;
     private int treesChopped = 0;
-
+        
     void Awake()
     {
         if (Instance == null)
@@ -37,33 +36,46 @@ public class GameController : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<Player>();
+        SetupUI();
         SpawnNewWood();
         UpdateMiniWoodCount();
+        ShowStartPopup();
+    }
+    
+    void Update()
+    {
+        if (IsPopupActive())
+            return;
 
-        startPopup.SetActive(true);
-
+        if (Input.GetMouseButtonDown(0))
+            HandleClick();
+    }
+        
+    private void SetupUI()
+    {
         upgradeAttackButton.onClick.AddListener(player.UpgradeAttack);
         upgradeCritButton.onClick.AddListener(player.UpgradeCrit);
         upgradeSpeedButton.onClick.AddListener(player.UpgradeSpeed);
     }
-
-    void Update()
+        
+    private void ShowStartPopup()
     {
-        if (startPopup.activeSelf)
-        {
-            return;
-        }
+        startPopup.SetActive(true);
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    private bool IsPopupActive()
+    {
+        return startPopup.activeSelf;
+    }
+        
+    private void HandleClick()
+    {
+        if (currentWood != null)
         {
-            if (currentWood == null)
-            {                
-                return;
-            }
             player.ChopWood(currentWood);
         }
     }
-
+        
     public void AddMiniWood(int amount)
     {
         miniWoodCount += amount;
@@ -85,7 +97,7 @@ public class GameController : MonoBehaviour
     {
         miniWoodNumText.text = miniWoodCount.ToString();
     }
-
+        
     public Wood GetCurrentWood()
     {
         return currentWood;
@@ -98,7 +110,7 @@ public class GameController : MonoBehaviour
             Destroy(currentWood.gameObject);
         }
 
-        int woodIndex = (treesChopped / 10) % woodPrefabs.Length; // 벤 나무 개수에 따라 프리팹 선택
+        int woodIndex = (treesChopped / 10) % woodPrefabs.Length; 
         GameObject woodObject = Instantiate(woodPrefabs[woodIndex]);
         currentWood = woodObject.GetComponent<Wood>();
         currentWood.SetHealthMultiplier(treeHealthMultiplier);
@@ -118,14 +130,14 @@ public class GameController : MonoBehaviour
         treesChopped++;
         SpawnNewWood();
     }
-
+       
     public void SaveGame()
     {
         GameData data = new GameData
         {
             clickDamage = player.clickDamage,
             critChance = player.critChance,
-            autoAttackInterval = player.autoAttackInterval,            
+            autoAttackInterval = player.autoAttackInterval,
             upgradeAttackLevel = player.upgradeAttackLevel,
             upgradeAttackCost = player.upgradeAttackCost,
             upgradeCritLevel = player.upgradeCritLevel,
@@ -153,7 +165,7 @@ public class GameController : MonoBehaviour
 
             player.clickDamage = data.clickDamage;
             player.critChance = data.critChance;
-            player.autoAttackInterval = data.autoAttackInterval;            
+            player.autoAttackInterval = data.autoAttackInterval;
             player.upgradeAttackLevel = data.upgradeAttackLevel;
             player.upgradeAttackCost = data.upgradeAttackCost;
             player.upgradeCritLevel = data.upgradeCritLevel;
@@ -176,14 +188,14 @@ public class GameController : MonoBehaviour
 
     public void StartNewGame()
     {
-        startPopup.SetActive(false); // 팝업창 닫기
-        SpawnNewWood(); // 새로운 나무 스폰
+        startPopup.SetActive(false); 
+        SpawnNewWood(); 
     }
 
     public void LoadSavedGame()
     {
         LoadGame();
-        startPopup.SetActive(false); // 팝업창 닫기
-        SpawnNewWood(); // 새로운 나무 스폰
+        startPopup.SetActive(false); 
+        SpawnNewWood(); 
     }
 }

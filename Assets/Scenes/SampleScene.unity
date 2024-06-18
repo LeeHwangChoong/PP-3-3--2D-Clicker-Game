@@ -2829,6 +2829,7 @@ MonoBehaviour:
   upgradeAttackButton: {fileID: 1402202602}
   upgradeCritButton: {fileID: 407567395}
   upgradeSpeedButton: {fileID: 290785360}
+  damageTextPrefab: {fileID: 3336014152089857137, guid: bcb8c2c15a5393446b10e2821acbd48f, type: 3}
 --- !u!1 &2040646733
 GameObject:
   m_ObjectHideFlags: 0
