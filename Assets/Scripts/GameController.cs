@@ -145,6 +145,7 @@ public class GameController : MonoBehaviour
     public void LoadGame()
     {
         string path = Application.persistentDataPath + "/savefile.json";
+
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
@@ -162,6 +163,8 @@ public class GameController : MonoBehaviour
             miniWoodCount = data.miniWoodCount;
             treesChopped = data.treesChopped;
             treeHealthMultiplier = data.treeHealthMultiplier;
+
+            player.UpdateUpgradeButtonTexts();
 
             Debug.Log("Game Loaded");
         }

@@ -109,7 +109,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void UpdateUpgradeButtonTexts()
+    public void UpdateUpgradeButtonTexts()
     {
         upgradeAttackButtonText.text = $"LV. {upgradeAttackLevel} 공격력 증가 (나무: {upgradeAttackCost})";
         upgradeCritButtonText.text = $"LV. {upgradeCritLevel} 치명타 확률 증가 (나무: {upgradeCritCost})";
